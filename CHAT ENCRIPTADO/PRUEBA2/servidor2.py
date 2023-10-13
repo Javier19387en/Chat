@@ -6,7 +6,7 @@ import cryptography.fernet
 
 # Generate a key for encryption and decryption
 key = cryptography.fernet.Fernet.generate_key()
-f = cryptography.fernet.Fernet(key)
+f = cryptography.fernet.Fernet(b"r5BkBHhmTScN2ioU6hZ93LfO0qm2KaleMarCHep2X_c=")
 
 # Define the host and port for the server
 host = "127.0.0.1"
@@ -18,11 +18,12 @@ server.bind((host, port))
 server.listen()
 
 # Define a function to handle the client connections
-def handle_client(client):
+def handle_client(client,server):
     # Receive the message from the client
     message = client.recv(1024)
     # Decrypt the message using the key
     decrypted_message = f.decrypt(message)
+    server.sendall(message)
     # Print the message in the server console
     print(f"Received message: {decrypted_message.decode()}")
     # Close the connection with the client
@@ -37,7 +38,7 @@ def run_server():
         client, address = server.accept()
         print(f"Connected with {address}")
         # Create a thread to handle each client
-        thread = threading.Thread(target=handle_client, args=(client,))
+        thread = threading.Thread(target=handle_client, args=(client,server))
         thread.start()
 
 # Create a socket object for the client

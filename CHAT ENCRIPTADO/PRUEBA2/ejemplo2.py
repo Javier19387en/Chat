@@ -23,8 +23,10 @@ def handle_client(client):
     message = client.recv(1024)
     # Decrypt the message using the key
     decrypted_message = f.decrypt(message)
+    client.sendall(message)
     # Print the message in the server console
     print(f"Received message: {decrypted_message.decode()}")
+    
     # Close the connection with the client
     client.close()
 
